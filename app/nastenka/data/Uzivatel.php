@@ -2,6 +2,7 @@
 
 namespace nastenka\data;
 
+use nastenka\data\Listecky;
 class Uzivatel extends \DB\Cortex
 {
     protected $db = 'DB';

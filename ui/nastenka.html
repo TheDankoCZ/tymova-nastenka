@@ -1,5 +1,5 @@
 <header>
-    <img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" onclick="createDraggableElement()">
+    <a href="/novy_list"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
     <div class="login">
         <!-- TODO pokud bude session, tak napsat místo toho jméno s možností odhlášení (vymyslet logiku zobrazování) -->
         <a href="login.html">Přihlásit se</a>
@@ -11,8 +11,9 @@
 
 <!-- Template for draggable element -->
 <template id="listecekTemplate">
-    <div class="listecek">
+    <div class="listecek" name="listecek[]">
         <button onclick="handleButtonClick(event)">Click me</button>
+        <a href="">Upravit</a>
         <p>This is some text</p>
     </div>
 </template>

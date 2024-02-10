@@ -2,8 +2,7 @@
 
 namespace nastenka\data;
 
-use DB\Cortex;
-
+use nastenka\data\Uzivatel;
 class Listecky extends \DB\Cortex
 {
     protected $db = 'DB';
@@ -22,6 +21,10 @@ class Listecky extends \DB\Cortex
             'type' => 'VARCHAR256',
             'nullable' => false,
         ],
+        'z' => [
+            'type' => 'VARCHAR256',
+            'nullable' => false,
+        ],
         'stav' => [
             'type' => 'VARCHAR256',
             'nullable' => false,
@@ -32,8 +35,9 @@ class Listecky extends \DB\Cortex
             //nevím pravte si jak bude potřeba
             'default' => 'white',
         ],
-        'autor'=> [
-            'belongs-to-one' => ['\nastenka\data\Uzivatel'],
+        'autor' => [
+            'belongs-to-one' => 'nastenka\data\Uzivatel',
+            'nullable' => false,
         ],
     ];
 }

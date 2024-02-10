@@ -14,6 +14,8 @@ class Install
         Listecky::setdown();
         Listecky::setup();
 
+
+
         $base->reroute('/');
     }
 }
