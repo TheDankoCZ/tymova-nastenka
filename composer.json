@@ -1,0 +1,10 @@
+{
+  "name": "vendor_name/tymova-nastenka",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "require": {
+    "bcosca/fatfree": "3.8.*",
+    "ikkez/f3-cortex": "v1.7.*"
+  }
+}

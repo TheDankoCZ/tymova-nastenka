@@ -1,0 +1,9 @@
+<include href="hlavicka.html"></include>
+<check if="{{@content}}">
+    <true>
+        <include href="{{@content}}"></include>
+    </true>
+    <false>
+        <h1>Žádná data k zobrazení</h1>
+    </false>
+</check>
