@@ -1,11 +1,75 @@
 <header>
-    <img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon">
+    <img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" onclick="createDraggableElement()">
     <div class="login">
         <!-- TODO pokud bude session, tak napsat místo toho jméno s možností odhlášení (vymyslet logiku zobrazování) -->
         <a href="login.html">Přihlásit se</a>
         <a href="register.html">Registrovat</a>
     </div>
 </header>
-<main></main>
+
+<main id="container"></main>
+
+<!-- Template for draggable element -->
+<template id="listecekTemplate">
+    <div class="listecek">
+        <button onclick="handleButtonClick(event)">Click me</button>
+        <p>This is some text</p>
+    </div>
+</template>
+
+<script>
+    function createDraggableElement() {
+        // Clone the template
+        const template = document.getElementById('listecekTemplate');
+        const newElement = template.content.cloneNode(true).firstElementChild;
+
+        newElement.className = 'listecek';
+        newElement.draggable = true;
+
+        // Set background color to a random color
+        newElement.style.backgroundColor = "rgb(255,255,255)";
+
+        // Set initial position (adjust these values as needed)
+        newElement.style.left = '50px';
+        newElement.style.top = '100px';
+
+        document.getElementById('container').appendChild(newElement);
+
+        let offsetX, offsetY, isDragging = false;
+
+        newElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - newElement.getBoundingClientRect().left;
+            offsetY = e.clientY - newElement.getBoundingClientRect().top;
+            newElement.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+
+            newElement.style.left = `${x}px`;
+            newElement.style.top = `${y}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                newElement.style.cursor = 'grab';
+
+                // Set initial position when mouse is released
+                const rect = newElement.getBoundingClientRect();
+                newElement.style.left = `${rect.left}px`;
+                newElement.style.top = `${rect.top}px`;
+            }
+        });
+    }
+    function handleButtonClick(event) {
+        alert('Button clicked!');
+        // You can add more functionality here
+    }
+</script>
 </body>
 </html>
