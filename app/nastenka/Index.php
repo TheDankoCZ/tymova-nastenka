@@ -86,7 +86,11 @@ class Index
         $base->set("content","upravit_list.html");
         $listecek = new Listecky();
         $data = $listecek->findone(["id=?",$base->get('PARAMS.id')]);
+        $kon = $data['konec'];
+        $konec = date("Y-m-d\TH:i", strtotime($kon));
         $base->set("data", $data);
+        $base->set("konec", $konec);
+
         echo \Template::instance()->render("index.html");
     }
 
@@ -95,6 +99,8 @@ class Index
         $listecek = new Listecky();
         $listecek->load(['id=?', $base->get('PARAMS.id')]);
         $listecek->copyfrom($base->get("POST"));
+        $konec = date("d.m.Y H:i", strtotime($base->get('POST.konec')));
+        $listecek->konec = $konec;
         $listecek->save();
         $base->reroute('/');
     }
