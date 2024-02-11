@@ -86,4 +86,17 @@ class Index
         $listecek->save();
         $base->reroute('/');
     }
+    public function post_smazat(\Base $base)
+    {
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $data['id']]);
+        $listecek->erase();
+        $listecek->save();
+
+    }
 }

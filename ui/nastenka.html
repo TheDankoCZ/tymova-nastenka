@@ -13,6 +13,7 @@
 <template id="listecekTemplate">
     <div class="listecek">
         <a id="uprav"><button>Upravit</button></a>
+        <button onclick="smazat(event)">Smazat</button>
         <!-- <button onclick="random_barva(this)">barva</button> -->
         <br>
         <p id="textContent">TEXT</p>
@@ -73,6 +74,7 @@
                 newElement.style.left = `${rect.left}px`;
                 newElement.style.top = `${rect.top}px`;
                 const data = { id: newElement.id, x: rect.left, y: rect.top }; // Data k odeslání
+
                 console.log(data);
 
                 ajaxRequest("/zmena_pozice", data);
@@ -120,6 +122,15 @@
         xhr.send(JSON.stringify(data));
     }
 
+    function smazat(event) {
+        const listecekId = event.target.parentElement.id; // Získání ID listku
+        const data = { id: listecekId}; // Data k odeslání
+        console.log(data);
+
+        ajaxRequest("/smazat", data);
+        const element = document.getElementById(event.target.parentElement.id);
+        element.remove();
+    }
 </script>
 
 <repeat group="{{@data}}" value="{{@data}}">
