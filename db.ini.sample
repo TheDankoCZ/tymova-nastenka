@@ -1,6 +1,0 @@
-;vypln spravne udaje pro prihlaseni a zmen jmeno na db.ini
-;a ted uz vim ze tohle priste delat nemusim
-[globals]
-db[dsn] = "mysql:host=localhost;dbname=databaze_name"
-db[username] = "username"
-db[password] = "password"
