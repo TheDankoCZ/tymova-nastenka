@@ -33,7 +33,7 @@ class Index
         $listecek = new Listecky();
         //nemám přehled jak je udělaná SESSION tak to pak bude potřeba opravit
         //$listecek->author = $base->get('SESSION.user[id]');
-        $listecek->author = 1;
+        $listecek->autor = 1;
         $listecek->copyfrom($base->get("POST"));
         $listecek->save();
         $base->reroute('/');
