@@ -14,6 +14,11 @@ class Uzivatel extends \DB\Cortex
             'type' => 'VARCHAR256',
             'nullable' => false,
         ],
+        'email' => [
+            'type' => 'TEXT',
+            'nullable' => false,
+            'unique' => true,
+        ],
         'heslo' => [
             'type' => 'VARCHAR256',
             'nullable' => false,
@@ -22,4 +27,8 @@ class Uzivatel extends \DB\Cortex
             'has-many' => ['\nastenka\data\Listecky','autor'],
         ],
     ];
+
+    public function set_heslo($value) {
+        return password_hash($value, PASSWORD_DEFAULT); //Password hash
+    }
 }

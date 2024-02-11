@@ -2,11 +2,12 @@
 
 namespace nastenka;
 
-use nastenka\data\Uzivatel;
 use nastenka\data\Listecky;
-class Install
+use nastenka\data\Uzivatel;
+
+class  Install
 {
-    public function instal(\Base $base)
+    public function Install(\Base $base)
     {
         Uzivatel::setdown();
         Uzivatel::setup();
@@ -14,8 +15,6 @@ class Install
         Listecky::setdown();
         Listecky::setup();
 
-
-
-        $base->reroute('/');
+        $base->reroute("/");
     }
 }

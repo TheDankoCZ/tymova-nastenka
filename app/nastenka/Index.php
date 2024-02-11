@@ -11,8 +11,7 @@ class Index
         $base->set("title","Nástěnka");
         $base->set("content","nastenka.html");
 
-        //$uzivatel_id = $base->get('SESSION.user[id]');
-        $uzivatel_id = 1;
+        $uzivatel_id = $base->get('SESSION.user["id"]');
         $listecky = new Listecky;
         $data = $listecky->find(['archiv=?',0],['autor=?',$uzivatel_id]);
 
@@ -31,9 +30,7 @@ class Index
     public function post_novy_list(\Base $base)
     {
         $listecek = new Listecky();
-        //nemám přehled jak je udělaná SESSION tak to pak bude potřeba opravit
-        //$listecek->author = $base->get('SESSION.user[id]');
-        $listecek->autor = 1;
+        $listecek->autor = $base->get('SESSION.user["id"]');
         $listecek->copyfrom($base->get("POST"));
         $listecek->save();
         $base->reroute('/');
@@ -104,9 +101,7 @@ class Index
     {
         $base->set("title","Nástěnka");
         $base->set("content","archiv.html");
-
-        //$uzivatel_id = $base->get('SESSION.user[id]');
-        $uzivatel_id = 1;
+        $uzivatel_id = $base->get('SESSION.user["id"]');
         $listecky = new Listecky;
         $data = $listecky->find(['archiv=?',1],['autor=?',$uzivatel_id]);
 

@@ -1,9 +1,17 @@
 <header>
     <a href="/novy_list"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
     <div class="login">
+        <check if="{{ @SESSION.isLoggedIn }}">
+            <true>
+                <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
+                <a href="/odhlaseni">Odhlásit se</a>
+            </true>
+            <false>
         <!-- TODO pokud bude session, tak napsat místo toho jméno s možností odhlášení (vymyslet logiku zobrazování) -->
-        <a href="login.html" id="loginLink">Přihlásit se</a>
-        <a href="register.html">Registrovat</a>
+                <a href="/prihlaseni">Přihlásit se</a>
+                <a href="/registrace">Registrovat</a>
+            </false>
+        </check>
     </div>
 </header>
 
@@ -18,7 +26,6 @@
         <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
     </div>
 </template>
-
 
 <script>
     function createDraggableElement(x,y,barva,barva_textu,text,id) {
