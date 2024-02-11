@@ -1,0 +1,68 @@
+<form method="post">
+    <input type="hidden" name="x" value="{{@data.x}}">
+    <input type="hidden" name="y" value="{{@data.y}}">
+    <input type="hidden" name="z" value="{{@data.z}}">
+
+    <label for="text">Text na lístečku: </label> <br>
+    <textarea id="text" name="text" id="text" placeholder="" rows="4" cols="50">{{@data.text}}</textarea>
+    <br>
+    <label for="barva">Barva lístečku:</label>
+    <select name="barva" id="barva">
+        <check if="{{@data.barva}}=='white'">
+            <true>
+                <option value="white" selected>White</option>
+            </true>
+            <false>
+                <option value="white">White</option>
+            </false>
+        </check>
+        <check if="{{@data.barva}}=='yellow'">
+            <true>
+                <option value="yellow" selected>Yellow</option>
+            </true>
+            <false>
+                <option value="yellow">Yellow</option>
+            </false>
+        </check>
+        <check if="{{@data.barva}}=='green'">
+            <true>
+                <option value="green" selected>Green</option>
+            </true>
+            <false>
+                <option value="green">Green</option>
+            </false>
+        </check>
+        <check if="{{@data.barva}}=='orange'">
+            <true>
+                <option value="orange" selected>Orange</option>
+            </true>
+            <false>
+                <option value="orange">Orange</option>
+            </false>
+        </check>
+        <check if="{{@data.barva}}=='blue'">
+            <true>
+                <option value="blue" selected>Blue</option>
+            </true>
+            <false>
+                <option value="blue">Blue</option>
+            </false>
+        </check>
+    </select>
+<br>
+    <label for="stav">Stav lístečku</label>
+    <div id="stav">
+        <label for="nic">Nic: </label>
+        <input type="radio" id="nic" name="stav" value="1" checked>
+        <label for="neco">Rozepsáno: </label>
+        <input type="radio" id="neco" name="stav" value="2">
+        <label for="hotovo">Hotovo: </label>
+        <input type="radio" id="hotovo" name="stav" value="3">
+        <label for="nedkonceno">Nedokončeno: </label>
+        <input type="radio" id="nedkonceno" name="stav" value="4">
+    </div>
+
+    <button type="submit">Uložit</button>
+</form>
+</body>
+</html>
