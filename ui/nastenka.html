@@ -13,9 +13,9 @@
 <template id="listecekTemplate">
     <div class="listecek">
         <p id="textContent">TEXT</p><br>
-        <a id="uprav" ><button style="position: absolute; bottom: 1px; right: 20%;"><i class="fas fa-edit"></i></button></a>
-        <button onclick="smazat(event)" style="position: absolute; bottom: 1px; right: 12%;"><i class="fas fa-trash-alt"></i></button>
-        <button onclick="random_barva(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-paint-brush"></i></button>
+        <a id="uprav" ><button style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button></a>
+        <button onclick="random_barva(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
+        <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
     </div>
 </template>
 
@@ -121,14 +121,13 @@
         xhr.send(JSON.stringify(data));
     }
 
-    function smazat(event) {
-        const listecekId = event.target.parentElement.id; // Získání ID listku
+    function smazat(element) {
+        const listecekId = element.parentElement.id; // Získání ID listku
         const data = { id: listecekId}; // Data k odeslání
         console.log(data);
 
         ajaxRequest("/smazat", data);
-        const element = document.getElementById(event.target.parentElement.id);
-        element.remove();
+        element.parentElement.remove();
     }
 </script>
 
