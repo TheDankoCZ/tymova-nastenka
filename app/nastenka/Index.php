@@ -17,11 +17,15 @@ class Index
         {
             $listecky = new Listecky;
             $data = $listecky->find(['archiv=? AND autor=?',0,$uzivatel_id]);
-            foreach ($data as $key => $value)
+            if ($data)
             {
-                $data[$key]->text = nl2br(str_replace("\\n", "\\n", htmlspecialchars($value->text, ENT_QUOTES, 'UTF-8')));
+                foreach ($data as $key => $value)
+                {
+                    $data[$key]->text = nl2br(str_replace("\\n", "\\n", htmlspecialchars($value->text, ENT_QUOTES, 'UTF-8')));
+                }
+                $base->set("data", $data);
             }
-            $base->set("data", $data);
+
         }
         else
         {
@@ -50,6 +54,7 @@ class Index
         $listecek->autor = $base->get('SESSION.user["id"]');
         $listecek->copyfrom($base->get("POST"));
         $listecek->text = str_replace(["\r\n", "\r", "\n"], "\\n", $listecek->text);
+        $listecek->pridano = date("d.m.Y H:i");
         $listecek->save();
         $base->reroute('/');
     }
@@ -114,6 +119,7 @@ class Index
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $data['id']]);
         $listecek->archiv = 1;
+        $listecek->konec = date("d.m.Y H:i");
         $listecek->save();
     }
 
