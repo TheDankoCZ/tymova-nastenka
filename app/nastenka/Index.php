@@ -12,10 +12,17 @@ class Index
         $base->set("content","nastenka.html");
 
         $uzivatel_id = $base->get('SESSION.user["id"]');
-        $listecky = new Listecky;
-        $data = $listecky->find(['archiv=? AND autor=?',0,$uzivatel_id]);
 
-        $base->set("data", $data);
+        if ($uzivatel_id)
+        {
+            $listecky = new Listecky;
+            $data = $listecky->find(['archiv=? AND autor=?',0,$uzivatel_id]);
+            $base->set("data", $data);
+        }
+        else
+        {
+            $base->set("data", null);
+        }
 
         echo \Template::instance()->render("index.html");
     }
