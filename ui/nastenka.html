@@ -12,7 +12,6 @@
 <!-- Template for draggable element -->
 <template id="listecekTemplate">
     <div class="listecek">
-        <button onclick="handleButtonClick(event)">Přišpendlit</button>
         <a id="uprav"><button>Upravit</button></a>
         <br>
         <p id="textContent">TEXT</p>
@@ -30,10 +29,9 @@
         newElement.draggable = true;
         newElement.id = id;
 
-        // Set background color to a random color
         newElement.style.backgroundColor = barva;
 
-        // Set initial position (adjust these values as needed)
+        // Set initial position
         newElement.style.left = x;
         newElement.style.top = y;
 
@@ -72,37 +70,31 @@
                 const rect = newElement.getBoundingClientRect();
                 newElement.style.left = `${rect.left}px`;
                 newElement.style.top = `${rect.top}px`;
+                const data = { id: newElement.id, x: rect.left, y: rect.top }; // Data k odeslání
+
+                console.log(data);
+
+                // Vytvoření AJAX požadavku
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/zmena_pozice", true); // Nastavení adresy backendu
+                xhr.setRequestHeader("Content-Type", "application/json");
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Úspěšná odezva z backendu
+                            console.log("Data byla úspěšně odeslána na server.");
+                        } else {
+                            // Chyba při komunikaci s backendem
+                            console.error("Došlo k chybě při odesílání dat na server.");
+                        }
+                    }
+                };
+
+                // Odeslání dat na server ve formátu JSON
+                xhr.send(JSON.stringify(data));
             }
         });
-    }
-    function handleButtonClick(event) {
-        const listecekId = event.target.parentElement.id; // Získání ID listku
-        const rect = event.target.getBoundingClientRect();
-        const x = rect.left;
-        const y = rect.top;
-        const data = { id: listecekId, x: x, y: y }; // Data k odeslání
-
-        console.log(data);
-
-        // Vytvoření AJAX požadavku
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/zmena_pozice", true); // Nastavení adresy backendu
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    // Úspěšná odezva z backendu
-                    console.log("Data byla úspěšně odeslána na server.");
-                } else {
-                    // Chyba při komunikaci s backendem
-                    console.error("Došlo k chybě při odesílání dat na server.");
-                }
-            }
-        };
-
-        // Odeslání dat na server ve formátu JSON
-        xhr.send(JSON.stringify(data));
     }
 
 </script>

@@ -40,12 +40,16 @@ class Index
     }
     public function post_zmena_pozice(\Base $base)
     {
-        //ok Evidentně neumím pracovat s JSON
-        //TODO Nevím jak na to tak se na to pls někdo mrkněte, konzole tvrdí že data to posílá správný
+        // Get the raw JSON data from the request body
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+
         $list = new Listecky();
-        $listecek = $list->load(["id=?",$base->get('POST.id')]);
-        $listecek->x = $base->get('POST.x');
-        $listecek->y = $base->get('POST.y');
+        $listecek = $list->findone(["id=?", $data['id']]);
+        $listecek->x = $data['x'];
+        $listecek->y = $data['y'];
         $listecek->save();
     }
     public function get_upravit(\Base $base)
