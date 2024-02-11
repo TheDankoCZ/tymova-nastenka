@@ -6,50 +6,6 @@
     <label for="text">Text na lístečku: </label> <br>
     <textarea id="text" name="text" id="text" placeholder="" rows="4" cols="50">{{@data.text}}</textarea>
     <br>
-    <label for="barva">Barva lístečku:</label>
-    <select name="barva" id="barva">
-        <check if="{{@data.barva}}=='white'">
-            <true>
-                <option value="white" selected>White</option>
-            </true>
-            <false>
-                <option value="white">White</option>
-            </false>
-        </check>
-        <check if="{{@data.barva}}=='yellow'">
-            <true>
-                <option value="yellow" selected>Yellow</option>
-            </true>
-            <false>
-                <option value="yellow">Yellow</option>
-            </false>
-        </check>
-        <check if="{{@data.barva}}=='green'">
-            <true>
-                <option value="green" selected>Green</option>
-            </true>
-            <false>
-                <option value="green">Green</option>
-            </false>
-        </check>
-        <check if="{{@data.barva}}=='orange'">
-            <true>
-                <option value="orange" selected>Orange</option>
-            </true>
-            <false>
-                <option value="orange">Orange</option>
-            </false>
-        </check>
-        <check if="{{@data.barva}}=='blue'">
-            <true>
-                <option value="blue" selected>Blue</option>
-            </true>
-            <false>
-                <option value="blue">Blue</option>
-            </false>
-        </check>
-    </select>
-<br>
     <label for="stav">Stav lístečku</label>
     <div id="stav">
         <label for="nic">Nic: </label>

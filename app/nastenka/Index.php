@@ -17,7 +17,15 @@ class Index
         {
             $listecky = new Listecky;
             $data = $listecky->find(['archiv=? AND autor=?',0,$uzivatel_id]);
-            $base->set("data", $data);
+            if ($data)
+            {
+                foreach ($data as $key => $value)
+                {
+                    $data[$key]->text = nl2br(str_replace("\\n", "\\n", htmlspecialchars($value->text, ENT_QUOTES, 'UTF-8')));
+                }
+                $base->set("data", $data);
+            }
+
         }
         else
         {
@@ -45,6 +53,8 @@ class Index
         $listecek = new Listecky();
         $listecek->autor = $base->get('SESSION.user["id"]');
         $listecek->copyfrom($base->get("POST"));
+        $listecek->text = str_replace(["\r\n", "\r", "\n"], "\\n", $listecek->text);
+        $listecek->pridano = date("d.m.Y H:i");
         $listecek->save();
         $base->reroute('/');
     }
@@ -84,6 +94,7 @@ class Index
         $base->set("content","upravit_list.html");
         $listecek = new Listecky();
         $data = $listecek->findone(["id=?",$base->get('PARAMS.id')]);
+        $data->text = str_replace("\\n", "\n", $data->text);
         $base->set("data", $data);
         echo \Template::instance()->render("index.html");
     }
@@ -93,6 +104,7 @@ class Index
         $listecek = new Listecky();
         $listecek->load(['id=?', $base->get('PARAMS.id')]);
         $listecek->copyfrom($base->get("POST"));
+        $listecek->text = str_replace(["\r\n", "\r", "\n"], "\\n", $listecek->text);
         $listecek->save();
         $base->reroute('/');
     }
@@ -107,6 +119,7 @@ class Index
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $data['id']]);
         $listecek->archiv = 1;
+        $listecek->konec = date("d.m.Y H:i");
         $listecek->save();
     }
 

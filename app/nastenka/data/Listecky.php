@@ -48,5 +48,13 @@ class Listecky extends \DB\Cortex
             'nullable' => false,
             'default' => 0,
         ],
+        'pridano' => [
+            'type' => 'VARCHAR256',
+            'nullable' => false,
+        ],
+        'konec' => [
+            'type' => 'VARCHAR256',
+            'nullable' => false,
+        ],
     ];
 }
