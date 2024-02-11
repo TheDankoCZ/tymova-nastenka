@@ -13,7 +13,7 @@ class Index
 
         $uzivatel_id = $base->get('SESSION.user["id"]');
         $listecky = new Listecky;
-        $data = $listecky->find(['archiv=?',0],['autor=?',$uzivatel_id]);
+        $data = $listecky->find(['archiv=? AND autor=?',0,$uzivatel_id]);
 
         $base->set("data", $data);
 
@@ -103,7 +103,7 @@ class Index
         $base->set("content","archiv.html");
         $uzivatel_id = $base->get('SESSION.user["id"]');
         $listecky = new Listecky;
-        $data = $listecky->find(['archiv=?',1],['autor=?',$uzivatel_id]);
+        $data = $listecky->find(['archiv=? AND autor=?',1,$uzivatel_id]);
 
         $base->set("data", $data);
 
