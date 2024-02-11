@@ -10,6 +10,10 @@ class User
 
     public function get_registrace(\Base $base)
     {
+        if($base->get('SESSION.user'))
+        {
+            $base->reroute('/');
+        }
         $base->set("title","Nástěnka - registrace");
         $base->set("content","user/registrace.html");
         echo \Template::instance()->render("index.html");
@@ -42,6 +46,10 @@ class User
 
     public function get_prihlaseni(\Base $base)
     {
+        if($base->get('SESSION.user'))
+        {
+            $base->reroute('/');
+        }
         $base->set("title","Nástěnka - přihlášení");
         $base->set("content","user/prihlaseni.html");
         echo \Template::instance()->render("index.html");
