@@ -2,7 +2,7 @@
     <a href="/novy_list"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
     <div class="login">
         <!-- TODO pokud bude session, tak napsat místo toho jméno s možností odhlášení (vymyslet logiku zobrazování) -->
-        <a href="login.html">Přihlásit se</a>
+        <a href="login.html" id="loginLink">Přihlásit se</a>
         <a href="register.html">Registrovat</a>
     </div>
 </header>
@@ -11,28 +11,36 @@
 
 <!-- Template for draggable element -->
 <template id="listecekTemplate">
-    <div class="listecek" name="listecek[]">
-        <button onclick="handleButtonClick(event)">Click me</button>
-        <a href="">Upravit</a>
-        <p>This is some text</p>
+    <div class="listecek">
+        <button onclick="handleButtonClick(event)">Přišpendlit</button>
+        <a id="uprav"><button>Upravit</button></a>
+        <br>
+        <p id="textContent">TEXT</p>
     </div>
 </template>
 
+
 <script>
-    function createDraggableElement() {
+    function createDraggableElement(x,y,barva,text,id) {
         // Clone the template
         const template = document.getElementById('listecekTemplate');
         const newElement = template.content.cloneNode(true).firstElementChild;
 
         newElement.className = 'listecek';
         newElement.draggable = true;
+        newElement.id = id;
 
         // Set background color to a random color
-        newElement.style.backgroundColor = "rgb(255,255,255)";
+        newElement.style.backgroundColor = barva;
 
         // Set initial position (adjust these values as needed)
-        newElement.style.left = '50px';
-        newElement.style.top = '100px';
+        newElement.style.left = x;
+        newElement.style.top = y;
+
+        const textElement = newElement.querySelector('#textContent');
+        textElement.textContent = text;
+        const upravHref = newElement.querySelector('#uprav');
+        upravHref.href = 'upravit/' + id;
 
         document.getElementById('container').appendChild(newElement);
 
@@ -68,9 +76,42 @@
         });
     }
     function handleButtonClick(event) {
-        alert('Button clicked!');
-        // You can add more functionality here
+        const listecekId = event.target.parentElement.id; // Získání ID listku
+        const rect = event.target.getBoundingClientRect();
+        const x = rect.left;
+        const y = rect.top;
+        const data = { id: listecekId, x: x, y: y }; // Data k odeslání
+
+        console.log(data);
+
+        // Vytvoření AJAX požadavku
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/zmena_pozice", true); // Nastavení adresy backendu
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Úspěšná odezva z backendu
+                    console.log("Data byla úspěšně odeslána na server.");
+                } else {
+                    // Chyba při komunikaci s backendem
+                    console.error("Došlo k chybě při odesílání dat na server.");
+                }
+            }
+        };
+
+        // Odeslání dat na server ve formátu JSON
+        xhr.send(JSON.stringify(data));
     }
+
 </script>
+
+<repeat group="{{@data}}" value="{{@data}}">
+    <script>
+        createDraggableElement("{{@data.x}}px","{{@data.y}}px","{{@data.barva}}","{{@data.text}}","{{@data.id}}")
+    </script>
+</repeat>
+
 </body>
 </html>
