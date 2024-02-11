@@ -14,7 +14,7 @@ class Index
         //$uzivatel_id = $base->get('SESSION.user[id]');
         $uzivatel_id = 1;
         $listecky = new Listecky;
-        $data = $listecky->find(['autor=?',$uzivatel_id]);
+        $data = $listecky->find(['archiv=?',0],['autor=?',$uzivatel_id]);
 
         $base->set("data", $data);
 
@@ -86,7 +86,7 @@ class Index
         $listecek->save();
         $base->reroute('/');
     }
-    public function post_smazat(\Base $base)
+    public function post_odebrat(\Base $base)
     {
         $json = file_get_contents('php://input');
 
@@ -95,8 +95,23 @@ class Index
 
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $data['id']]);
-        $listecek->erase();
+        $listecek->archiv = 1;
         $listecek->save();
 
+    }
+
+    public function get_archiv(\Base $base)
+    {
+        $base->set("title","Nástěnka");
+        $base->set("content","archiv.html");
+
+        //$uzivatel_id = $base->get('SESSION.user[id]');
+        $uzivatel_id = 1;
+        $listecky = new Listecky;
+        $data = $listecky->find(['archiv=?',1],['autor=?',$uzivatel_id]);
+
+        $base->set("data", $data);
+
+        echo \Template::instance()->render("index.html");
     }
 }
