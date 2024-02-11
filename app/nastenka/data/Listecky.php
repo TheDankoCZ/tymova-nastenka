@@ -43,5 +43,10 @@ class Listecky extends \DB\Cortex
             'belongs-to-one' => 'nastenka\data\Uzivatel',
             'nullable' => false,
         ],
+        'archiv' => [
+            'type' => 'BOOLEAN',
+            'nullable' => false,
+            'default' => 0,
+        ],
     ];
 }
