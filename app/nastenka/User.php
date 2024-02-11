@@ -28,6 +28,7 @@ class User
             try {
                 $user->copyfrom($data);
                 $user->save();
+                $this->fillUser($user);
                 $base->reroute("/");
             }
             catch (\Exception $e)

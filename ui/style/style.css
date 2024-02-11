@@ -59,3 +59,8 @@ main {
     position: absolute;
     cursor: grab;
 }
+
+#textContent {
+    padding: 2%;
+    line-height: 0.5em;
+}
