@@ -44,6 +44,9 @@ class Index
         $listecek = new Listecky();
         $listecek->autor = $base->get('SESSION.user["id"]');
         $listecek->copyfrom($base->get("POST"));
+        $listecek->pridatno = date("d.m.Y H:i");
+        $konec = date("d.m.Y H:i", strtotime($base->get('POST.konec')));
+        $listecek->konec = $konec;
         $listecek->save();
         $base->reroute('/');
     }
