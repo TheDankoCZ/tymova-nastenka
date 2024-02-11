@@ -21,6 +21,7 @@ class Index
         }
         else
         {
+            $base->set("SESSION.isLoggedIn", false);
             $base->set("data", null);
         }
 
@@ -95,6 +96,7 @@ class Index
         $listecek->save();
         $base->reroute('/');
     }
+
     public function post_odebrat(\Base $base)
     {
         $json = file_get_contents('php://input');
@@ -106,16 +108,19 @@ class Index
         $listecek = $list->findone(["id=?", $data['id']]);
         $listecek->archiv = 1;
         $listecek->save();
-
     }
 
     public function get_archiv(\Base $base)
     {
+        if(!$base->get('SESSION.user'))
+        {
+            $base->reroute('/');
+        }
         $base->set("title","Nástěnka");
         $base->set("content","archiv.html");
         $uzivatel_id = $base->get('SESSION.user["id"]');
         $listecky = new Listecky;
-        $data = $listecky->find(['archiv=? AND autor=?',1,$uzivatel_id]);
+        $data = $listecky->find(['archiv=? AND autor=?', 1, $uzivatel_id]);
 
         $base->set("data", $data);
 
@@ -129,7 +134,6 @@ class Index
         $listecek->archiv = 0;
         $listecek->save();
         $base->reroute('/archiv');
-
     }
     public function get_smazat(\Base $base)
     {
@@ -137,6 +141,5 @@ class Index
         $listecek = $list->findone(["id=?", $base->get('PARAMS.id')]);
         $listecek->erase();
         $base->reroute('/archiv');
-
     }
 }

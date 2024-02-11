@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    function createDraggableElement(x,y,barva,barva_textu,text,id) {
+    function vytvorit_listecek(x,y,barva,barva_textu,text,id) {
         // Clone the template
         const template = document.getElementById('listecekTemplate');
         const newElement = template.content.cloneNode(true).firstElementChild;
@@ -141,7 +141,7 @@
 
 <repeat group="{{@data}}" value="{{@data}}">
     <script>
-        createDraggableElement("{{@data.x}}px","{{@data.y}}px","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}")
+        vytvorit_listecek("{{@data.x}}px","{{@data.y}}px","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}")
     </script>
 </repeat>
 
