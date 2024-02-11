@@ -114,4 +114,22 @@ class Index
 
         echo \Template::instance()->render("index.html");
     }
+
+    public function get_obnovit(\Base $base)
+    {
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $base->get('PARAMS.id')]);
+        $listecek->archiv = 0;
+        $listecek->save();
+        $base->reroute('/archiv');
+
+    }
+    public function get_smazat(\Base $base)
+    {
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $base->get('PARAMS.id')]);
+        $listecek->erase();
+        $base->reroute('/archiv');
+
+    }
 }
