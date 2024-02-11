@@ -52,6 +52,22 @@ class Index
         $listecek->y = $data['y'];
         $listecek->save();
     }
+
+    public function post_zmena_barvy(\Base $base)
+    {
+        // Get the raw JSON data from the request body
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $data['id']]);
+        $listecek->barva = $data['barva'];
+        $listecek->barva_textu = $data['barva_textu'];
+        $listecek->save();
+    }
+
     public function get_upravit(\Base $base)
     {
         $base->set("title","Nový lístek");

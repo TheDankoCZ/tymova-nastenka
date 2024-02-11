@@ -32,8 +32,12 @@ class Listecky extends \DB\Cortex
         'barva' => [
             'type' => 'VARCHAR256',
             'nullable' => false,
-            //nevím pravte si jak bude potřeba
-            'default' => 'white',
+            'default' => '#ffffff',
+        ],
+        'barva_textu' => [
+            'type' => 'VARCHAR256',
+            'nullable' => false,
+            'default' => '#000000',
         ],
         'autor' => [
             'belongs-to-one' => 'nastenka\data\Uzivatel',
