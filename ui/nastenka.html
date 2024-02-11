@@ -4,6 +4,7 @@
         <check if="{{ @SESSION.isLoggedIn }}">
             <true>
                 <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
+                <a href="/archiv">Archiv</a>
                 <a href="/odhlaseni">Odhlásit se</a>
             </true>
             <false>
