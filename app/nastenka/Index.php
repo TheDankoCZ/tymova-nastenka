@@ -29,9 +29,14 @@ class Index
 
     public function get_novy_list(\Base $base)
     {
-        $base->set("title","Nový lístek");
-        $base->set("content","novy_list.html");
-        echo \Template::instance()->render("index.html");
+        if($base->get('SESSION.user'))
+        {
+            $base->set("title","Nový lístek");
+            $base->set("content","novy_list.html");
+            echo \Template::instance()->render("index.html");
+        }else{
+            $base->reroute('/prihlaseni');
+        }
     }
 
     public function post_novy_list(\Base $base)
