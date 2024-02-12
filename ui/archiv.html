@@ -35,6 +35,8 @@
             <th>Text</th>
             <th>Stav</th>
             <th>Autor</th>
+            <th>Vytvořen</th>
+            <th>Ukončen</th>
             <th></th>
             <th></th>
         </tr>
@@ -46,6 +48,8 @@
                 <td>{{@data.text}}</td>
                 <td>{{@data.stav}}</td>
                 <td>{{@data.autor.jmeno}}</td>
+                <td>{{@data.pridano}}</td>
+                <td>{{@data.konec}}</td>
                 <td>
                     <a href="/obnovit/{{@data.id}}">Obnovit</a>
                 </td>
