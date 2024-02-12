@@ -65,7 +65,7 @@
             offsetX = e.clientX - newElement.getBoundingClientRect().left;
             offsetY = e.clientY - newElement.getBoundingClientRect().top;
             newElement.style.cursor = 'grabbing';
-            newElement.style.zIndex = 3;
+            newElement.style.zIndex = 1000;
 
             const allNotes = document.querySelectorAll('.listecek');
             allNotes.forEach(note => {
