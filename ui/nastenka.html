@@ -8,7 +8,6 @@
                 <a href="/odhlaseni">Odhlásit se</a>
             </true>
             <false>
-        <!-- TODO pokud bude session, tak napsat místo toho jméno s možností odhlášení (vymyslet logiku zobrazování) -->
                 <a href="/prihlaseni">Přihlásit se</a>
                 <a href="/registrace">Registrovat</a>
             </false>
@@ -23,7 +22,7 @@
     <div class="listecek">
         <div id="textContent">TEXT</div><br>
         <p id="vytvoreno" style="position: absolute; bottom: -15px;"></p>
-        <a id="uprav" ><button style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button></a>
+        <button onclick="upravit_text(this)" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
         <button onclick="random_barva(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
         <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
     </div>
@@ -51,8 +50,6 @@
 
         const textElement = newElement.querySelector('#textContent');
         textElement.innerHTML = marked(text);
-        const upravHref = newElement.querySelector('#uprav');
-        upravHref.href = 'upravit/' + id;
         const casElement = newElement.querySelector('#vytvoreno');
         casElement.innerHTML = cas;
 
@@ -61,29 +58,33 @@
         let offsetX, offsetY, isDragging = false;
 
         newElement.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            offsetX = e.clientX - newElement.getBoundingClientRect().left;
-            offsetY = e.clientY - newElement.getBoundingClientRect().top;
-            newElement.style.cursor = 'grabbing';
-            newElement.style.zIndex = 3;
+            // Check if the click occurred inside the textarea
+            const isClickInsideTextarea = e.target.tagName.toLowerCase() === 'textarea';
 
-            const allNotes = document.querySelectorAll('.listecek');
-            allNotes.forEach(note => {
-                if (note.id !== newElement.id) {
-                    const zIndex = parseInt(note.style.zIndex);
-                    if (zIndex !== 1) {
-                        newZIndex = zIndex -1;
-                        note.style.zIndex = newZIndex;
+            if (!isClickInsideTextarea) {
+                // Continue with the drag behavior if not clicking inside the textarea
+                isDragging = true;
+                offsetX = e.clientX - newElement.getBoundingClientRect().left;
+                offsetY = e.clientY - newElement.getBoundingClientRect().top;
+                newElement.style.cursor = 'grabbing';
+                newElement.style.zIndex = 3;
 
-                        const data = {id: note.id, z: newZIndex};
-                        console.log(data);
-                        ajaxRequest("/zmena_z", data)
+                const allNotes = document.querySelectorAll('.listecek');
+                allNotes.forEach(note => {
+                    if (note.id !== newElement.id) {
+                        const zIndex = parseInt(note.style.zIndex);
+                        if (zIndex !== 1) {
+                            newZIndex = zIndex - 1;
+                            note.style.zIndex = newZIndex;
 
+                            const data = {id: note.id, z: newZIndex};
+                            console.log(data);
+                            ajaxRequestPOST("/zmena_z", data);
+                        }
                     }
-                }
-            })
-
-            });
+                });
+            }
+        });
 
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
@@ -108,9 +109,72 @@
 
                 console.log(data);
 
-                ajaxRequest("/zmena_pozice", data);
+                ajaxRequestPOST("/zmena_pozice", data);
             }
         });
+    }
+
+    function upravit_text(element) {
+        const button = element;
+        element = element.parentElement.querySelector('#textContent');
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/ziskej_text/'+element.parentElement.id, true);
+
+        // Set up the onload event handler
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                button.style.display = 'none';
+
+                console.log(xhr.responseText);
+                // Parse the response as JSON assuming it's in JSON format
+                const text = JSON.parse(xhr.responseText);
+
+                // Create a contenteditable div and set its content to the current text
+                const editableDiv = document.createElement('textarea');
+                editableDiv.style.width = element.parentElement.offsetWidth-10 + 'px';
+                editableDiv.style.height = element.parentElement.offsetHeight-40 + 'px';
+                editableDiv.style.overflow = 'hidden'; // Prevent scrollbars
+                editableDiv.style.resize = 'none'; // Prevent resizing
+                editableDiv.textContent = text;
+
+                element.parentElement.draggable = false;
+
+                // Replace the existing div with the editable one
+                element.replaceWith(editableDiv);
+
+                // Focus on the editable div
+                editableDiv.focus();
+
+                editableDiv.addEventListener('blur', function () {
+                    // Create a new div and set its content to the edited text
+                    const newDiv = document.createElement('div');
+                    newDiv.innerHTML = marked(editableDiv.value);
+                    newDiv.id = "textContent";
+
+                    // Replace the editable div with the new div
+                    editableDiv.replaceWith(newDiv);
+
+                    newDiv.parentElement.draggable = true;
+
+                    // Změna textu v databázi
+                    const data = { id: newDiv.parentElement.id, text: editableDiv.value }; // Data k odeslání
+                    console.log(data);
+
+                    ajaxRequestPOST("/zmena_textu", data);
+                    button.style.display = 'block';
+                });
+            } else {
+                console.error('Failed to fetch data from the server');
+            }
+        };
+
+        // Set up the onerror event handler
+        xhr.onerror = function () {
+            console.error('Error occurred during the XMLHttpRequest');
+        };
+
+        // Send the request
+        xhr.send();
     }
 
     function getRandomColor() {
@@ -143,10 +207,10 @@
         const data = { id: element.parentElement.id, barva: randomColor, barva_textu: barva_textu }; // Data k odeslání
         console.log(data);
 
-        ajaxRequest("/zmena_barvy", data);
+        ajaxRequestPOST("/zmena_barvy", data);
     }
 
-    function ajaxRequest(url, data) {
+    function ajaxRequestPOST(url, data) {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -158,7 +222,7 @@
         const data = { id: listecekId}; // Data k odeslání
         console.log(data);
 
-        ajaxRequest("/smazat", data);
+        ajaxRequestPOST("/smazat", data);
         element.parentElement.remove();
     }
 

@@ -25,6 +25,10 @@ class Index
                 }
                 $base->set("data", $data);
             }
+            else
+            {
+                $base->set("data", null);
+            }
 
         }
         else
@@ -58,6 +62,30 @@ class Index
         $listecek->save();
         $base->reroute('/');
     }
+
+    public function get_ziskej_text(\Base $base)
+    {
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $base->get('PARAMS.id')]);
+        $formated = str_replace("\\n", "\n", $listecek->text);
+        echo json_encode($formated);
+    }
+
+    public function post_zmena_textu(\Base $base)
+    {
+        // Get the raw JSON data from the request body
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+        $data['text'] = str_replace(["\r\n", "\r", "\n"], "\\n", $data['text']);
+
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $data['id']]);
+        $listecek->text = $data['text'];
+        $listecek->save();
+    }
+
     public function post_zmena_pozice(\Base $base)
     {
         // Get the raw JSON data from the request body
@@ -100,27 +128,6 @@ class Index
         $listecek->barva = $data['barva'];
         $listecek->barva_textu = $data['barva_textu'];
         $listecek->save();
-    }
-
-    public function get_upravit(\Base $base)
-    {
-        $base->set("title","Nový lístek");
-        $base->set("content","upravit_list.html");
-        $listecek = new Listecky();
-        $data = $listecek->findone(["id=?",$base->get('PARAMS.id')]);
-        $data->text = str_replace("\\n", "\n", $data->text);
-        $base->set("data", $data);
-        echo \Template::instance()->render("index.html");
-    }
-
-    public function post_upravit(\Base $base)
-    {
-        $listecek = new Listecky();
-        $listecek->load(['id=?', $base->get('PARAMS.id')]);
-        $listecek->copyfrom($base->get("POST"));
-        $listecek->text = str_replace(["\r\n", "\r", "\n"], "\\n", $listecek->text);
-        $listecek->save();
-        $base->reroute('/');
     }
 
     public function post_odebrat(\Base $base)
