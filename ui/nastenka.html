@@ -72,7 +72,13 @@
                 if (note.id !== newElement.id) {
                     const zIndex = parseInt(note.style.zIndex);
                     if (zIndex !== 1) {
-                        note.style.zIndex = zIndex - 1;
+                        newZIndex = zIndex -1;
+                        note.style.zIndex = newZIndex;
+
+                        const data = {id: note.id, z: newZIndex};
+                        console.log(data);
+                        ajaxRequest("/zmena_z", data)
+
                     }
                 }
             })

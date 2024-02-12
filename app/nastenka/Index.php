@@ -73,6 +73,19 @@ class Index
         $listecek->z = $data['z'];
         $listecek->save();
     }
+    public function post_zmena_z(\Base $base)
+    {
+        // Get the raw JSON data from the request body
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $data['id']]);
+        $listecek->z = $data['z'];
+        $listecek->save();
+    }
 
     public function post_zmena_barvy(\Base $base)
     {
