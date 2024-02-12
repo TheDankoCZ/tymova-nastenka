@@ -70,6 +70,7 @@ class Index
         $listecek = $list->findone(["id=?", $data['id']]);
         $listecek->x = $data['x'];
         $listecek->y = $data['y'];
+        $listecek->z = $data['z'];
         $listecek->save();
     }
 

@@ -31,7 +31,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/marked.min.js"></script>
 <script>
-    function vytvorit_listecek(x,y,barva,barva_textu,text,id,cas) {
+    function vytvorit_listecek(x,y,z,barva,barva_textu,text,id,cas) {
         // Clone the template
         const template = document.getElementById('listecekTemplate');
         const newElement = template.content.cloneNode(true).firstElementChild;
@@ -46,6 +46,8 @@
         // Set initial position
         newElement.style.left = x;
         newElement.style.top = y;
+
+        newElement.style.zIndex = z;
 
         const textElement = newElement.querySelector('#textContent');
         textElement.innerHTML = marked(text);
@@ -63,7 +65,19 @@
             offsetX = e.clientX - newElement.getBoundingClientRect().left;
             offsetY = e.clientY - newElement.getBoundingClientRect().top;
             newElement.style.cursor = 'grabbing';
-        });
+            newElement.style.zIndex = 3;
+
+            const allNotes = document.querySelectorAll('.listecek');
+            allNotes.forEach(note => {
+                if (note.id !== newElement.id) {
+                    const zIndex = parseInt(note.style.zIndex);
+                    if (zIndex !== 1) {
+                        note.style.zIndex = zIndex - 1;
+                    }
+                }
+            })
+
+            });
 
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
@@ -84,7 +98,7 @@
                 const rect = newElement.getBoundingClientRect();
                 newElement.style.left = `${rect.left}px`;
                 newElement.style.top = `${rect.top}px`;
-                const data = { id: newElement.id, x: rect.left, y: rect.top }; // Data k odeslání
+                const data = { id: newElement.id, x: rect.left, y: rect.top, z: parseInt(newElement.style.zIndex) }; // Data k odeslání
 
                 console.log(data);
 
@@ -147,7 +161,7 @@
 
 <repeat group="{{@data}}" value="{{@data}}">
     <script>
-        vytvorit_listecek("{{@data.x}}px","{{@data.y}}px","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.pridano}}")
+        vytvorit_listecek("{{@data.x}}px","{{@data.y}}px","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.pridano}}")
     </script>
 </repeat>
 
