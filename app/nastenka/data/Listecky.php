@@ -11,22 +11,22 @@ class Listecky extends \DB\Cortex
 
     protected $fieldConf = [
         'text' => [
-            'type' => 'VARCHAR256',
+            'type' => 'TEXT',
         ],
         'x' => [
-            'type' => 'VARCHAR256',
+            'type' => 'INT8',
             'nullable' => false,
         ],
         'y' => [
-            'type' => 'VARCHAR256',
+            'type' => 'INT8',
             'nullable' => false,
         ],
         'z' => [
-            'type' => 'VARCHAR256',
+            'type' => 'INT8',
             'nullable' => false,
         ],
         'stav' => [
-            'type' => 'VARCHAR256',
+            'type' => 'INT4',
             'nullable' => false,
         ],
         'barva' => [

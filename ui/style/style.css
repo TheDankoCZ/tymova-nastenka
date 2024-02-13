@@ -55,7 +55,7 @@ main {
 
 .listecek {
     width: 250px;
-    height: 250px;
+    min-height: 250px;
     position: absolute;
     cursor: grab;
 }
@@ -72,6 +72,7 @@ main {
 #textContent {
     padding: 2%;
     line-height: 1em;
+    word-wrap: break-word;
 }
 
 #textContent h1, h2, h3, h4, h5, h6 {
