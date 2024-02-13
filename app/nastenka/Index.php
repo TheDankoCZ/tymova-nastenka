@@ -53,7 +53,7 @@ class Index
         $listecek->text = "";
         $listecek->stav = 1;
         $listecek->save();
-        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id, "pridano" => $listecek->pridano));
+        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id, "pridano" => $listecek->pridano, "stav" => 1));
     }
 
     public function get_ziskej_text(\Base $base)
@@ -76,6 +76,20 @@ class Index
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $data['id']]);
         $listecek->text = $data['text'];
+        $listecek->save();
+    }
+
+    public function post_zmena_stavu(\Base $base)
+    {
+        // Get the raw JSON data from the request body
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $data['id']]);
+        $listecek->stav = $data['stav'];
         $listecek->save();
     }
 

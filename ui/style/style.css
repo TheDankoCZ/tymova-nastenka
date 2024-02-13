@@ -74,6 +74,10 @@ main {
     line-height: 1em;
 }
 
+#textContent h1, h2, h3, h4, h5, h6 {
+    line-height: 1em;
+}
+
 .unselectable {
     -webkit-user-select: none;
     -webkit-touch-callout: none;

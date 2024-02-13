@@ -1,5 +1,7 @@
 <header>
-    <a class="unselectable" onclick="vytvorit_novy()"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
+    <check if="{{ @SESSION.isLoggedIn }}">
+        <a class="unselectable" onclick="vytvorit_novy()"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
+    </check>
     <div class="login" onmousedown="return false" onselectstart="return false">
         <check if="{{ @SESSION.isLoggedIn }}">
             <true>
@@ -23,15 +25,16 @@
         <div id="textContent">TEXT</div><br>
         <p id="vytvoreno" style="position: absolute; bottom: -15px;"></p>
         <button onclick="upravit_text(this)" id="upravit_button" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
+        <button id="check_button" style="position: absolute; bottom: 1px; right: 25%; display: none;"><i class="fas fa-check"></i></button>
         <button onclick="random_barva(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
         <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
-        <img src="{{@BASE}}/ui/content/stav1.png" alt="ikona_stavu" style="position: absolute; top: 2%; right: 2%; width: 32px; height: 32px">
+        <img onclick="zmena_stavu(this)" src="{{@BASE}}/ui/content/stav1.png" id="stav" draggable="false" alt="stav" style="position: absolute; top: 2%; right: 2%; width: 32px; height: 32px; cursor: pointer">
     </div>
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/marked.min.js"></script>
 <script>
-    function vytvorit_listecek(x,y,z,barva,barva_textu,text,id,cas) {
+    function vytvorit_listecek(x,y,z,barva,barva_textu,text,id,cas,stav) {
         // Clone the template
         const template = document.getElementById('listecekTemplate');
         const newElement = template.content.cloneNode(true).firstElementChild;
@@ -53,6 +56,8 @@
         textElement.innerHTML = marked(text);
         const casElement = newElement.querySelector('#vytvoreno');
         casElement.innerHTML = cas;
+        const stavElement = newElement.querySelector('#stav');
+        stavElement.src = "{{@BASE}}/ui/content/stav" + stav + ".png";
 
         document.getElementById('container').appendChild(newElement);
 
@@ -61,8 +66,10 @@
         newElement.addEventListener('mousedown', (e) => {
             // Check if the click occurred inside the textarea
             const isClickInsideTextarea = e.target.tagName.toLowerCase() === 'textarea';
+            // Check if the click occurred inside element with id stav
+            const isClickInsideStav = e.target.id === 'stav';
 
-            if (!isClickInsideTextarea) {
+            if (!isClickInsideTextarea && !isClickInsideStav) {
                 // Continue with the drag behavior if not clicking inside the textarea
                 isDragging = true;
                 offsetX = e.clientX - newElement.getBoundingClientRect().left;
@@ -127,7 +134,7 @@
                 const data = JSON.parse(xhr.responseText);
                 console.log(data);
 
-                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id, data.pridano);
+                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id, data.pridano, data.stav);
 
                 listecek = document.getElementById(data.id);
                 listecek.querySelector('#upravit_button').click();
@@ -147,7 +154,10 @@
 
     function upravit_text(element) {
         const button = element;
+        const stavElement = element.parentElement.querySelector('#stav');
+        const checkButton = element.parentElement.querySelector('#check_button');
         element = element.parentElement.querySelector('#textContent');
+
         const xhr = new XMLHttpRequest();
         xhr.open('GET', '/ziskej_text/'+element.parentElement.id, true);
 
@@ -155,6 +165,8 @@
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
                 button.style.display = 'none';
+                stavElement.style.display = 'none';
+                checkButton.style.display = 'block';
 
                 console.log(xhr.responseText);
                 // Parse the response as JSON assuming it's in JSON format
@@ -193,6 +205,8 @@
 
                     ajaxRequestPOST("/zmena_textu", data);
                     button.style.display = 'block';
+                    stavElement.style.display = 'block';
+                    checkButton.style.display = 'none';
                 });
             } else {
                 console.error('Failed to fetch data from the server');
@@ -206,6 +220,17 @@
 
         // Send the request
         xhr.send();
+    }
+
+    function zmena_stavu(element) {
+        let aktualni_stav = Number(element.src.at(-5));
+        let novy_stav = (aktualni_stav % 4) + 1
+        element.src = "{{@BASE}}/ui/content/stav" + novy_stav + ".png";
+
+        $data = { id: element.parentElement.id, stav: novy_stav }; // Data k odeslání
+        console.log($data);
+
+        ajaxRequestPOST("/zmena_stavu", $data);
     }
 
     function getRandomColor() {
@@ -262,7 +287,7 @@
 
 <repeat group="{{@data}}" value="{{@data}}">
     <script>
-        vytvorit_listecek("{{@data.x}}","{{@data.y}}","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.pridano}}")
+        vytvorit_listecek("{{@data.x}}","{{@data.y}}","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.pridano}}","{{@data.stav}}")
     </script>
 </repeat>
 
