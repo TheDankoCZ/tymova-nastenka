@@ -1,11 +1,11 @@
 <header>
-    <a href="/novy_list"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
-    <div class="login">
+    <a class="unselectable" href="/novy_list"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
+    <div class="login" onmousedown="return false" onselectstart="return false">
         <check if="{{ @SESSION.isLoggedIn }}">
             <true>
                 <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
-                <a href="/archiv">Archiv</a>
-                <a href="/odhlaseni">Odhlásit se</a>
+                <a class="unselectable" href="/archiv">Archiv</a>
+                <a class="unselectable" href="/odhlaseni">Odhlásit se</a>
             </true>
             <false>
                 <a href="/prihlaseni">Přihlásit se</a>
