@@ -73,6 +73,11 @@ main {
     padding: 2%;
     line-height: 1em;
     word-wrap: break-word;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #textContent h1, h2, h3, h4, h5, h6 {
