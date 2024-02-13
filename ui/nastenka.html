@@ -26,9 +26,24 @@
         <p id="vytvoreno" style="position: absolute; bottom: -15px;"></p>
         <button onclick="upravit_text(this)" id="upravit_button" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
         <button id="check_button" style="position: absolute; bottom: 1px; right: 25%; display: none;"><i class="fas fa-check"></i></button>
-        <button onclick="random_barva(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
+        <button onclick="vybrat_barvu(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
         <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
-        <img onclick="zmena_stavu(this)" src="{{@BASE}}/ui/content/stav1.png" id="stav" draggable="false" alt="stav" style="position: absolute; top: 2%; right: 2%; width: 32px; height: 32px; cursor: pointer">
+        <img onclick="zmena_stavu(this)" src="{{@BASE}}/ui/content/stav1.png" id="stav" class="unselectable" draggable="false" alt="stav" style="position: absolute; top: 2%; right: 2%; width: 32px; height: 32px; cursor: pointer">
+    </div>
+</template>
+
+<template id="colorPickerTemplate">
+    <div class="colorContainer">
+        <button onclick="set_barvu('#ffffff', this)" style="background-color: #ffffff"></button>
+        <button onclick="set_barvu('#000000', this)" style="background-color: #000000"></button>
+        <button onclick="set_barvu('#ff0000', this)" style="background-color: #ff0000"></button>
+        <button onclick="set_barvu('#00ff00', this)" style="background-color: #00ff00"></button>
+        <button onclick="set_barvu('#0000ff', this)" style="background-color: #0000ff"></button>
+        <button onclick="set_barvu('#ffff00', this)" style="background-color: #ffff00"></button>
+        <button onclick="set_barvu('#ff00ff', this)" style="background-color: #ff00ff"></button>
+        <button onclick="set_barvu('#00ffff', this)" style="background-color: #00ffff"></button>
+        <button onclick="set_barvu('#ff8000', this)" style="background-color: #ff8000"></button>
+        <button onclick="random_barva(this)"><i class="fas fa-random"></i></button>
     </div>
 </template>
 
@@ -179,8 +194,6 @@
                 editableDiv.style.resize = 'none'; // Prevent resizing
                 editableDiv.textContent = text;
 
-                element.parentElement.draggable = false;
-
                 // Replace the existing div with the editable one
                 element.replaceWith(editableDiv);
 
@@ -195,8 +208,6 @@
 
                     // Replace the editable div with the new div
                     editableDiv.replaceWith(newDiv);
-
-                    newDiv.parentElement.draggable = true;
 
                     // Změna textu v databázi
                     const data = { id: newDiv.parentElement.id, text: editableDiv.value }; // Data k odeslání
@@ -232,6 +243,19 @@
         ajaxRequestPOST("/zmena_stavu", $data);
     }
 
+    function vybrat_barvu(element) {
+        if(element.parentElement.querySelector('.colorContainer') != null) {
+            element.parentElement.querySelector('.colorContainer').remove();
+        } else {
+            const template = document.getElementById('colorPickerTemplate');
+            const newElement = template.content.cloneNode(true).firstElementChild;
+
+            newElement.style.width = element.parentElement.offsetWidth-20 + 'px';
+            newElement.style.top = element.parentElement.offsetHeight + 'px';
+            element.parentElement.appendChild(newElement);
+        }
+    }
+
     function getRandomColor() {
         // Generate a random color in hex format
         return '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -249,20 +273,26 @@
 
     function random_barva(element) {
         const randomColor = getRandomColor();
-        element.parentElement.style.backgroundColor = randomColor;
+        set_barvu(randomColor, element)
+    }
 
+    function set_barvu(color, element) {
         // Determine the brightness of the background color
-        const brightness = getBrightness(randomColor);
+        const brightness = getBrightness(color);
 
         // Set text color based on brightness
-        barva_textu = brightness > 128 ? '#000000' : '#ffffff';
+        const barva_textu = brightness > 128 ? '#000000' : '#ffffff';
         element.parentElement.style.color = barva_textu;
 
         // Změna barvy v databázi
-        const data = { id: element.parentElement.id, barva: randomColor, barva_textu: barva_textu }; // Data k odeslání
+        const data = { id: element.parentElement.parentElement.id, barva: color, barva_textu: barva_textu }; // Data k odeslání
         console.log(data);
 
         ajaxRequestPOST("/zmena_barvy", data);
+
+        element.parentElement.parentElement.style.backgroundColor = color;
+        element.parentElement.parentElement.style.color = barva_textu;
+        element.parentElement.remove();
     }
 
     function ajaxRequestPOST(url, data) {
