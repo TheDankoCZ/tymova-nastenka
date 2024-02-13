@@ -1,5 +1,5 @@
 <header>
-    <a class="unselectable" href="/novy_list"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
+    <a class="unselectable" onclick="vytvorit_novy()"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
     <div class="login" onmousedown="return false" onselectstart="return false">
         <check if="{{ @SESSION.isLoggedIn }}">
             <true>
@@ -22,9 +22,10 @@
     <div class="listecek">
         <div id="textContent">TEXT</div><br>
         <p id="vytvoreno" style="position: absolute; bottom: -15px;"></p>
-        <button onclick="upravit_text(this)" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
+        <button onclick="upravit_text(this)" id="upravit_button" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
         <button onclick="random_barva(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
         <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
+        <img src="{{@BASE}}/ui/content/stav1.png" alt="ikona_stavu" style="position: absolute; top: 2%; right: 2%; width: 32px; height: 32px">
     </div>
 </template>
 
@@ -43,8 +44,8 @@
         newElement.style.color = barva_textu;
 
         // Set initial position
-        newElement.style.left = x;
-        newElement.style.top = y;
+        newElement.style.left = x + 'px';
+        newElement.style.top = y + 'px';
 
         newElement.style.zIndex = z;
 
@@ -112,6 +113,36 @@
                 ajaxRequestPOST("/zmena_pozice", data);
             }
         });
+    }
+
+    function vytvorit_novy() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/novy_listecek', true);
+
+        // Set up the onload event handler
+        xhr.onload = function () {
+            let listecek;
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Parse the response as JSON assuming it's in JSON format
+                const data = JSON.parse(xhr.responseText);
+                console.log(data);
+
+                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id, data.pridano);
+
+                listecek = document.getElementById(data.id);
+                listecek.querySelector('#upravit_button').click();
+            } else {
+                console.error('Failed to fetch data from the server');
+            }
+        };
+
+        // Set up the onerror event handler
+        xhr.onerror = function () {
+            console.error('Error occurred during the XMLHttpRequest');
+        };
+
+        // Send the request
+        xhr.send();
     }
 
     function upravit_text(element) {
@@ -231,7 +262,7 @@
 
 <repeat group="{{@data}}" value="{{@data}}">
     <script>
-        vytvorit_listecek("{{@data.x}}px","{{@data.y}}px","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.pridano}}")
+        vytvorit_listecek("{{@data.x}}","{{@data.y}}","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.pridano}}")
     </script>
 </repeat>
 

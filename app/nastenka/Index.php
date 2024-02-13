@@ -40,27 +40,20 @@ class Index
         echo \Template::instance()->render("index.html");
     }
 
-    public function get_novy_list(\Base $base)
-    {
-        if($base->get('SESSION.user'))
-        {
-            $base->set("title","Nový lístek");
-            $base->set("content","novy_list.html");
-            echo \Template::instance()->render("index.html");
-        }else{
-            $base->reroute('/prihlaseni');
-        }
-    }
-
-    public function post_novy_list(\Base $base)
+    public function novy_listecek(\Base $base)
     {
         $listecek = new Listecky();
         $listecek->autor = $base->get('SESSION.user["id"]');
-        $listecek->copyfrom($base->get("POST"));
-        $listecek->text = str_replace(["\r\n", "\r", "\n"], "\\n", $listecek->text);
         $listecek->pridano = date("d.m.Y H:i");
+        $listecek->x = 50;
+        $listecek->y = 100;
+        $listecek->z = 1000;
+        $listecek->barva = "#ffffff";
+        $listecek->barva_textu = "#000000";
+        $listecek->text = "";
+        $listecek->stav = 1;
         $listecek->save();
-        $base->reroute('/');
+        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id, "pridano" => $listecek->pridano));
     }
 
     public function get_ziskej_text(\Base $base)
