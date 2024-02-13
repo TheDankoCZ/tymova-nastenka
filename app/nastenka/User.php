@@ -87,7 +87,7 @@ class User
         $base->clear('SESSION.user');
         $base->set('SESSION.user["id"]', (string)$user->id);
         $base->set('SESSION.user["email"]', (string)$user->email);
-        $base->set('SESSION.user["name"]', (string)$user->name);
+        $base->set('SESSION.user["jmeno"]', (string)$user->jmeno);
         $base->set("SESSION.isLoggedIn", true);
     }
 
