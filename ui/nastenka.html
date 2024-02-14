@@ -181,6 +181,8 @@
                 button.style.display = 'none';
                 stavElement.style.display = 'none';
                 checkButton.style.display = 'block';
+                element.parentElement.style.width = element.parentElement.getBoundingClientRect().width + 'px';
+                element.parentElement.style.height = element.parentElement.getBoundingClientRect().height + 'px';
 
                 console.log(xhr.responseText);
                 // Parse the response as JSON assuming it's in JSON format
@@ -188,8 +190,8 @@
 
                 // Create a contenteditable div and set its content to the current text
                 const editableDiv = document.createElement('textarea');
-                editableDiv.style.width = element.parentElement.offsetWidth-10 + 'px';
-                editableDiv.style.height = element.parentElement.offsetHeight-40 + 'px';
+                editableDiv.style.width = element.parentElement.getBoundingClientRect().width-10 + 'px';
+                editableDiv.style.height = element.parentElement.getBoundingClientRect().height-40 + 'px';
                 editableDiv.style.overflow = 'hidden'; // Prevent scrollbars
                 editableDiv.style.resize = 'none'; // Prevent resizing
                 editableDiv.textContent = text;
@@ -217,6 +219,8 @@
                     button.style.display = 'block';
                     stavElement.style.display = 'block';
                     checkButton.style.display = 'none';
+                    newDiv.parentElement.style.width = 250 + 'px';
+                    newDiv.parentElement.style.height = 'auto';
                 });
             } else {
                 console.error('Failed to fetch data from the server');
@@ -250,8 +254,8 @@
             const template = document.getElementById('colorPickerTemplate');
             const newElement = template.content.cloneNode(true).firstElementChild;
 
-            newElement.style.width = element.parentElement.offsetWidth-20 + 'px';
-            newElement.style.top = element.parentElement.offsetHeight + 'px';
+            newElement.style.width = element.parentElement.getBoundingClientRect().width-20 + 'px';
+            newElement.style.top = element.parentElement.getBoundingClientRect().height + 'px';
             element.parentElement.appendChild(newElement);
         }
     }
