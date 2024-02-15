@@ -7,10 +7,10 @@
             <true>
                 <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
                 <a class="unselectable" href="/archiv">Archiv</a>
-                <a class="unselectable" href="/odhlaseni">Odhlásit se</a>
+                <a class="unselectable" href="/odhlaseni">Odhlásit</a>
             </true>
             <false>
-                <a href="/prihlaseni">Přihlásit se</a>
+                <a href="/prihlaseni">Přihlásit</a>
                 <a href="/registrace">Registrovat</a>
             </false>
         </check>
@@ -111,8 +111,23 @@
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
 
-            const x = e.clientX - offsetX;
-            const y = e.clientY - offsetY;
+            let x = e.clientX - offsetX;
+            let y = e.clientY - offsetY;
+
+            const aktualni_width = newElement.getBoundingClientRect().width;
+            const aktualni_height = newElement.getBoundingClientRect().height;
+
+            if (x < 0) {
+                x = 0;
+            } else if (x > window.innerWidth - aktualni_width) {
+                x = window.innerWidth - aktualni_width;
+            }
+
+            if (y < window.innerHeight * 0.05) {
+                y = window.innerHeight * 0.05;
+            } else if (y > window.innerHeight - aktualni_height) {
+                y = window.innerHeight - aktualni_height;
+            }
 
             newElement.style.left = `${x}px`;
             newElement.style.top = `${y}px`;
