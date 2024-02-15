@@ -210,4 +210,22 @@ class Index
 
         echo \Template::instance()->render("index.html");
     }
+
+    public function zverejnit(\Base $base)
+    {
+        $json = file_get_contents('php://input');
+
+        // Decode the JSON data into an associative array
+        $data = json_decode($json, true);
+
+        $list = new Listecky();
+        $listecek = $list->findone(["id=?", $data['id']]);
+        if ($listecek->verejny == 1)
+        {
+            $listecek->verejny = 0;
+        }else{
+            $listecek->verejny = 1;
+        }
+        $listecek->save();
+    }
 }
