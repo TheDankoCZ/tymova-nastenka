@@ -22,13 +22,13 @@
 <!-- Template for draggable element -->
 <template id="listecekTemplate">
     <div class="listecek">
+        <img onclick="zmena_stavu(this)" src="{{@BASE}}/ui/content/stav1.png" id="stav" class="unselectable" draggable="false" alt="stav">
         <div id="textContent">TEXT</div><br>
         <p id="cas" style="position: absolute; bottom: -15px;"></p>
         <button onclick="upravit_text(this)" id="upravit_button" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
         <button id="check_button" style="position: absolute; bottom: 1px; right: 25%; display: none;"><i class="fas fa-check"></i></button>
         <button onclick="vybrat_barvu(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
         <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
-        <img onclick="zmena_stavu(this)" src="{{@BASE}}/ui/content/stav1.png" id="stav" class="unselectable" draggable="false" alt="stav" style="position: absolute; top: 2%; right: 2%; width: 32px; height: 32px; cursor: pointer">
     </div>
 </template>
 
@@ -70,7 +70,7 @@
         textElement.innerHTML = marked(text);
         const casElement = newElement.querySelector('#cas');
         casElement.innerHTML = cas;
-        casElement.title = pridano;
+        casElement.title = "Vytvořeno: " + pridano;
         const stavElement = newElement.querySelector('#stav');
         stavElement.src = "{{@BASE}}/ui/content/stav" + stav + ".png";
 
@@ -164,7 +164,7 @@
                 const data = JSON.parse(xhr.responseText);
                 console.log(data);
 
-                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id,data.editovano, data.pridano, data.stav);
+                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id, data.editovano, data.pridano, data.stav);
 
                 listecek = document.getElementById(data.id);
                 listecek.querySelector('#upravit_button').click();
@@ -304,10 +304,10 @@
 
     function random_barva(element) {
         const randomColor = getRandomColor();
-        set_barvu(randomColor, element)
+        set_barvu(randomColor, element, true)
     }
 
-    function set_barvu(color, element) {
+    function set_barvu(color, element, random = false) {
         // Determine the brightness of the background color
         const brightness = getBrightness(color);
 
@@ -323,7 +323,9 @@
 
         element.parentElement.parentElement.style.backgroundColor = color;
         element.parentElement.parentElement.style.color = barva_textu;
-        element.parentElement.remove();
+        if(!random) {
+            element.parentElement.remove();
+        }
     }
 
     function ajaxRequestPOST(url, data) {
