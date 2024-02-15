@@ -7,6 +7,15 @@
             <true>
                 <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
                 <a class="unselectable" href="/archiv">Archiv</a>
+                <check if="{{@SESSION.verejna}}">
+                    <true>
+                        <a class="unselectable" href="/">Osobní</a>
+                    </true>
+                    <false>
+                        <a class="unselectable" href="/verejna">Veřejná</a>
+                    </false>
+                </check>
+
                 <a class="unselectable" href="/odhlaseni">Odhlásit</a>
             </true>
             <false>
@@ -49,7 +58,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/marked.min.js"></script>
 <script>
-    function vytvorit_listecek(x,y,z,barva,barva_textu,text,id,cas,pridano,stav) {
+    function vytvorit_listecek(x,y,z,barva,barva_textu,text,id,cas,pridano,stav,id_autor,id_uzivatel) {
         // Clone the template
         const template = document.getElementById('listecekTemplate');
         const newElement = template.content.cloneNode(true).firstElementChild;
@@ -73,6 +82,17 @@
         casElement.title = "Vytvořeno: " + pridano;
         const stavElement = newElement.querySelector('#stav');
         stavElement.src = "{{@BASE}}/ui/content/stav" + stav + ".png";
+
+        if (id_uzivatel != id_autor)
+        {
+            const btnUpravit = newElement.querySelector('#upravit_button');
+            const btnSmazat = newElement.querySelector('#smazat_button');
+            const btnBarva = newElement.querySelector('#barva_button');
+            btnUpravit.remove();
+            btnBarva.remove();
+            btnSmazat.remove();
+        }
+
 
         document.getElementById('container').appendChild(newElement);
 
@@ -164,7 +184,7 @@
                 const data = JSON.parse(xhr.responseText);
                 console.log(data);
 
-                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id, data.editovano, data.pridano, data.stav);
+                vytvorit_listecek(data.x, data.y, data.z, data.barva, data.barva_textu, data.text, data.id,data.editovano, data.pridano, data.stav, "SESSION.user['id']","SESSION.user['id']");
 
                 listecek = document.getElementById(data.id);
                 listecek.querySelector('#upravit_button').click();
@@ -349,7 +369,7 @@
 
 <repeat group="{{@data}}" value="{{@data}}">
     <script>
-        vytvorit_listecek("{{@data.x}}","{{@data.y}}","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.editovano}}","{{@data.pridano}}","{{@data.stav}}")
+        vytvorit_listecek("{{@data.x}}","{{@data.y}}","{{@data.z}}","{{@data.barva}}","{{@data.barva_textu}}","{{@data.text}}","{{@data.id}}","{{@data.editovano}}","{{@data.pridano}}","{{@data.stav}}","{{@data.autor.id}}","{{@SESSION.user['id']}}")
     </script>
 </repeat>
 

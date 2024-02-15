@@ -4,35 +4,30 @@ namespace nastenka;
 
 use nastenka\data\Listecky;
 use nastenka\data\Uzivatel;
+
 class Index
 {
     public function index(\Base $base)
     {
-        $base->set("title","Nástěnka");
-        $base->set("content","nastenka.html");
+        $base->set("title", "Nástěnka");
+        $base->set("content", "nastenka.html");
+        $base->set("SESSION.verejna", 0);
 
         $uzivatel_id = $base->get('SESSION.user["id"]');
 
-        if ($uzivatel_id)
-        {
+        if ($uzivatel_id) {
             $listecky = new Listecky;
-            $data = $listecky->find(['archiv=? AND autor=?',0,$uzivatel_id]);
-            if ($data)
-            {
-                foreach ($data as $key => $value)
-                {
+            $data = $listecky->find(['archiv=? AND autor=? AND verejny=?', 0, $uzivatel_id, 0]);
+            if ($data) {
+                foreach ($data as $key => $value) {
                     $data[$key]->text = nl2br(str_replace("\\n", "\\n", htmlspecialchars($value->text, ENT_QUOTES, 'UTF-8')));
                 }
                 $base->set("data", $data);
-            }
-            else
-            {
+            } else {
                 $base->set("data", null);
             }
 
-        }
-        else
-        {
+        } else {
             $base->set("SESSION.isLoggedIn", false);
             $base->set("data", null);
         }
@@ -53,8 +48,9 @@ class Index
         $listecek->barva_textu = "#000000";
         $listecek->text = "";
         $listecek->stav = 1;
+        $listecek->verejny = $base->get('SESSION.verejna');
         $listecek->save();
-        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id,"editovano" => $listecek->editovano, "pridano" => $listecek->pridano, "stav" => 1));
+        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id, "editovano" => $listecek->editovano, "pridano" => $listecek->pridano, "stav" => 1));
     }
 
     public function get_ziskej_text(\Base $base)
@@ -110,6 +106,7 @@ class Index
         $listecek->z = $data['z'];
         $listecek->save();
     }
+
     public function post_zmena_z(\Base $base)
     {
         // Get the raw JSON data from the request body
@@ -155,12 +152,11 @@ class Index
 
     public function get_archiv(\Base $base)
     {
-        if(!$base->get('SESSION.user'))
-        {
+        if (!$base->get('SESSION.user')) {
             $base->reroute('/');
         }
-        $base->set("title","Nástěnka");
-        $base->set("content","archiv.html");
+        $base->set("title", "Nástěnka");
+        $base->set("content", "archiv.html");
         $uzivatel_id = $base->get('SESSION.user["id"]');
         $listecky = new Listecky;
         $data = $listecky->find(['archiv=? AND autor=?', 1, $uzivatel_id]);
@@ -178,11 +174,40 @@ class Index
         $listecek->save();
         $base->reroute('/archiv');
     }
+
     public function get_smazat(\Base $base)
     {
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $base->get('PARAMS.id')]);
         $listecek->erase();
         $base->reroute('/archiv');
+    }
+
+    public function verejna(\Base $base)
+    {
+        $base->set("title", "Veřejná Nástěnka");
+        $base->set("content", "nastenka.html");
+        $base->set("SESSION.verejna", 1);
+
+        $uzivatel_id = $base->get('SESSION.user["id"]');
+
+        if ($uzivatel_id) {
+            $listecky = new Listecky;
+            $data = $listecky->find(['archiv=? AND verejny=?', 0, 1]);
+            if ($data) {
+                foreach ($data as $key => $value) {
+                    $data[$key]->text = nl2br(str_replace("\\n", "\\n", htmlspecialchars($value->text, ENT_QUOTES, 'UTF-8')));
+                }
+                $base->set("data", $data);
+            } else {
+                $base->set("data", null);
+            }
+
+        } else {
+            $base->set("SESSION.isLoggedIn", false);
+            $base->set("data", null);
+        }
+
+        echo \Template::instance()->render("index.html");
     }
 }
