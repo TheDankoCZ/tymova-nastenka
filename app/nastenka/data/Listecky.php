@@ -58,5 +58,8 @@ class Listecky extends \DB\Cortex
         'editovano' => [
             'type' => 'VARCHAR256'
         ],
+        'verejny' => [
+            'type' => 'BOOLEAN',
+        ],
     ];
 }
