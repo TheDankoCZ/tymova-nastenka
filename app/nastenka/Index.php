@@ -45,6 +45,7 @@ class Index
         $listecek = new Listecky();
         $listecek->autor = $base->get('SESSION.user["id"]');
         $listecek->pridano = date("d.m.Y H:i");
+        $listecek->editovano = $listecek->pridano;
         $listecek->x = 50;
         $listecek->y = 100;
         $listecek->z = 1000;
@@ -53,7 +54,7 @@ class Index
         $listecek->text = "";
         $listecek->stav = 1;
         $listecek->save();
-        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id, "pridano" => $listecek->pridano, "stav" => 1));
+        echo json_encode(array("x" => 50, "y" => 100, "z" => 1000, "barva" => "#ffffff", "barva_textu" => "#000000", "text" => "", "id" => $listecek->id,"editovano" => $listecek->editovano, "pridano" => $listecek->pridano, "stav" => 1));
     }
 
     public function get_ziskej_text(\Base $base)
@@ -76,6 +77,7 @@ class Index
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $data['id']]);
         $listecek->text = $data['text'];
+        $listecek->editovano = date("d.m.Y H:i");
         $listecek->save();
     }
 

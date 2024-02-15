@@ -55,5 +55,8 @@ class Listecky extends \DB\Cortex
         'konec' => [
             'type' => 'VARCHAR256'
         ],
+        'editovano' => [
+            'type' => 'VARCHAR256'
+        ],
     ];
 }
