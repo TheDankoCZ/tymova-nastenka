@@ -21,34 +21,38 @@
 
 <header>
     <div class="login">
+        <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
         <a href="/">Zpět</a>
     </div>
 </header>
 
-<h4 class="roleCenter" id="x">Archiv</h4>
-<br>
 <div class="tabulka">
     <table id="table_id" class="display cell-border" style="width:100%;">
         <thead>
         <tr>
-            <th>Id</th>
-            <th>Text</th>
+            <th>Viditelnost</th>
             <th>Stav</th>
-            <th>Autor</th>
+            <th>Text</th>
             <th>Vytvořen</th>
-            <th>Ukončen</th>
-            <th></th>
-            <th></th>
+            <th>Poslední úprava</th>
+            <th>Archivován</th>
+            <th>Obnovení</th>
+            <th>Trvalé smazání</th>
         </tr>
         </thead>
         <tbody>
         <repeat group="{{@data}}" value="{{@data}}">
             <tr>
-                <td>{{@data.id}}</td>
+                <td><check if="{{@data.verejny}}"><true>Veřejný</true><false>Osobní</false></check></td>
+                <td>
+                    <check if="{{@data.stav}}==1">Žádný</check>
+                    <check if="{{@data.stav}}==2">Rozdělaný</check>
+                    <check if="{{@data.stav}}==3">Dokončený</check>
+                    <check if="{{@data.stav}}==4">Nedokončený</check>
+                </td>
                 <td>{{@data.text}}</td>
-                <td>{{@data.stav}}</td>
-                <td>{{@data.autor.jmeno}}</td>
                 <td>{{@data.pridano}}</td>
+                <td>{{@data.editovano}}</td>
                 <td>{{@data.konec}}</td>
                 <td>
                     <a href="/obnovit/{{@data.id}}">Obnovit</a>
@@ -62,25 +66,82 @@
     </table>
 </div>
 
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script>
-    var text = $('#x').text();
     $(document).ready(function () {
-        $('#table_id').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
+        var table = $('#table_id').DataTable({
+            "bLengthChange": true,
+            "paging": true,
+            "bFilter": true,
+            "autoWidth": true,
+            // "scrollY": "1500px",
+            "scrollCollapse": true,
+            "dom": 'lf<"toolbar">rtip',    //custom toolbar za 'l' což je length tabulky (show entries dropbox) a 'f' což je filter
+            "order": [[5, "asc"]],
+            "columnDefs": [
                 {
-                    extend: 'excel',
-                    className: 'excelbtn',
-                    text: 'Excel'
-                },
+                    "targets": [3,4,5],
+                    "render": function (data, type, row) {
+                        // Assuming data is the date string in the format "DD.MM.YYYY HH:mm"
+                        if (type === 'sort') {
+                            return moment(data, 'DD.MM.YYYY HH:mm').format('YYYY-MM-DD HH:mm:ss');
+                        }
+                        return data;
+                    }
+                }
             ],
-            select: {
-                style: 'multi'
-            },
+            "language": {
+                "sEmptyTable": "Nemáte žádné archivované poznámky.",
+                "sInfo": "Zobrazuji _START_ až _END_ z celkem _TOTAL_ záznamů",
+                "sInfoEmpty": "Zobrazuji 0 až 0 z 0 záznamů",
+                "sInfoFiltered": "(filtrováno z celkem _MAX_ záznamů)",
+                "sInfoPostFix": "",
+                "sInfoThousands": " ",
+                "sLengthMenu": "Zobrazit záznamů _MENU_",
+                "sLoadingRecords": "Načítám...",
+                "sProcessing": "Provádímm...",
+                "sSearch": "Hledat:",
+                "sZeroRecords": "Žádné záznamy nebyly nalezeny.",
+                "oPaginate": {
+                    "sFirst": "První",
+                    "sLast": "Poslední",
+                    "sNext": "Další",
+                    "sPrevious": "Předchozí"
+                },
+                "oAria": {
+                    "sSortAscending": ": aktivujte pro řazení sloupce vzestupně›",
+                    "sSortDescending": ": aktivujte pro řazení sloupce sestupně›"
+                }
+            }
+        });
+
+        // Add custom toolbar
+        $("div.toolbar").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<b>Filter viditelnosti: </b> ' +
+            '<select id="viditelnostFilter">' +
+            '<option value="">Vše</option>' +
+            '<option value="Veřejný">Veřejný</option>' +
+            '<option value="Osobní">Osobní</option>' +
+            '</select>' +
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<b>Filtr stavu: </b>' +
+            '<select id="stavFilter">' +
+            '<option value="">Vše</option>' +
+            '<option value="Žádný">Žádný</option>' +
+            '<option value="Rozdělaný">Rozdělaný</option>' +
+            '<option value="Dokončený">Dokončený</option>' +
+            '<option value="Nedokončený">Nedokončený</option>' +
+            '</select>');
+
+        // Apply the filters when the dropdowns change
+        $('#stavFilter, #viditelnostFilter').change(function () {
+            var stavFilter = $('#stavFilter').val();
+            var viditelnostFilter = $('#viditelnostFilter').val();
+
+            table.columns(1).search(stavFilter ? '^' + stavFilter + '$' : '', true, false).draw();
+            table.columns(0).search(viditelnostFilter).draw();
         });
     });
 </script>
-
-
-
-
+    });
+</script>
