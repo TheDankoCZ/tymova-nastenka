@@ -24,22 +24,20 @@ header {
 }
 
 .login {
-    position: absolute;
+    position: relative;
     top: 50%;
-    right: 5%;
     transform: translateY(-50%);
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: right;
 }
 
 .login a {
     color: #000000;
     text-decoration: none;
-    padding: 1.5%;
-    margin: 0 5%;
     font-size: 2.222vh;
+    margin-right: 5%;
 }
 
 .login a:hover {
