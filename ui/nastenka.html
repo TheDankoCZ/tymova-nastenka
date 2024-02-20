@@ -34,11 +34,11 @@
         <img onclick="zmena_stavu(this)" src="{{@BASE}}/ui/content/stav1.png" id="stav" class="unselectable" draggable="false" alt="stav">
         <div id="textContent">TEXT</div><br>
         <p id="cas" style="position: absolute; bottom: -15px;"></p>
-        <button onclick="zverejnit(this)" style="position: absolute; bottom: 1px; right: 40%;"><i class="fas fa-globe"></i></button>
+        <button onclick="zverejnit(this)" id="zverejnit_button" style="position: absolute; bottom: 1px; right: 40%;"><i class="fas fa-globe"></i></button>
         <button onclick="upravit_text(this)" id="upravit_button" style="position: absolute; bottom: 1px; right: 25%;"><i class="fas fa-edit"></i></button>
         <button id="check_button" style="position: absolute; bottom: 1px; right: 25%; display: none;"><i class="fas fa-check"></i></button>
-        <button onclick="vybrat_barvu(this)" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
-        <button onclick="smazat(this)" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
+        <button onclick="vybrat_barvu(this)" id="barva_button" style="position: absolute; bottom: 1px; right: 11%;"><i class="fas fa-paint-brush"></i></button>
+        <button onclick="smazat(this)" id="smazat_button" style="position: absolute; bottom: 1px; right: 1%;"><i class="fas fa-trash-alt"></i></button>
     </div>
 </template>
 
@@ -84,11 +84,13 @@
         const stavElement = newElement.querySelector('#stav');
         stavElement.src = "{{@BASE}}/ui/content/stav" + stav + ".png";
 
-        if (id_uzivatel != id_autor)
+        if (id_uzivatel !== id_autor)
         {
+            const btnZverejnit = newElement.querySelector('#zverejnit_button');
             const btnUpravit = newElement.querySelector('#upravit_button');
             const btnSmazat = newElement.querySelector('#smazat_button');
             const btnBarva = newElement.querySelector('#barva_button');
+            btnZverejnit.remove();
             btnUpravit.remove();
             btnBarva.remove();
             btnSmazat.remove();
