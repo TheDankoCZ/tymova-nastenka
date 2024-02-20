@@ -21,6 +21,21 @@ header {
     margin-left: 5%;
     height: 80%;
     cursor: pointer;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+    margin-top: 5px;
+
+}
+.plus a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 2.444vh;
+}
+
+.plus a:hover {
+    color: #ff6900;
 }
 
 .login {

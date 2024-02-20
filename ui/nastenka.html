@@ -1,21 +1,22 @@
-<header>
+<header <check if="{{@SESSION.verejna}}"><true>style="background-color: #e6e6ff !important;"</true></check>>
     <check if="{{ @SESSION.isLoggedIn }}">
-        <a class="unselectable" onclick="vytvorit_novy()"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon" ></a>
+        <a class="unselectable" onclick="vytvorit_novy()"><img class="plus" src="{{@BASE}}/ui/content/plus.png" alt="pridat_icon"></a>
+        <div class="plus">
+            <check if="{{@SESSION.verejna}}">
+                <true>
+                    <a class="unselectable" href="/" title="Klikněte pro přesun na Osobní nástěnku">Veřejná nástěnka</a>
+                </true>
+                <false>
+                    <a class="unselectable" href="/verejna" title="Klikněte pro přesun na Veřejnou nástěnku">Osobní nástěnka</a>
+                </false>
+            </check>
+        </div>
     </check>
     <div class="login" onmousedown="return false" onselectstart="return false">
         <check if="{{ @SESSION.isLoggedIn }}">
             <true>
                 <a style="text-decoration: none; color: black;"><b>{{@SESSION.user["email"]}}</b></a>
                 <a class="unselectable" href="/archiv">Archiv</a>
-                <check if="{{@SESSION.verejna}}">
-                    <true>
-                        <a class="unselectable" href="/">Osobní</a>
-                    </true>
-                    <false>
-                        <a class="unselectable" href="/verejna">Veřejná</a>
-                    </false>
-                </check>
-
                 <a class="unselectable" href="/odhlaseni">Odhlásit</a>
             </true>
             <false>
@@ -25,6 +26,7 @@
         </check>
     </div>
 </header>
+
 
 <main id="container"></main>
 
