@@ -57,24 +57,24 @@ class Index
     {
         $list = new Listecky();
         $listecek = $list->findone(["id=?", $base->get('PARAMS.id')]);
-        $formated = str_replace("\\n", "\n", $listecek->text);
-        echo json_encode($formated);
+     //   $formated = str_replace("\\n", "\n", $listecek->text);
+        echo json_encode($listecek->text);
     }
 
     public function post_zmena_textu(\Base $base)
     {
         // Get the raw JSON data from the request body
-        $json = file_get_contents('php://input');
+        $json = $base->get('BODY');//file_get_contents('php://input');
 
         // Decode the JSON data into an associative array
         $data = json_decode($json, true);
-        $data['text'] = str_replace(["\r\n", "\r", "\n"], "\\n", $data['text']);
+  //      $data['text'] = str_replace(["\r\n", "\r", "\n"], "\\n", $data['text']);
 
         $list = new Listecky();
-        $listecek = $list->findone(["id=?", $data['id']]);
-        $listecek->text = $data['text'];
-        $listecek->editovano = date("d.m.Y H:i");
-        $listecek->save();
+        $list->load(["id=?", $data['id']]);
+        $list->text = $data['text'];
+        //$listecek->editovano = date("d.m.Y H:i");
+        $list->save();
     }
 
     public function post_zmena_stavu(\Base $base)
